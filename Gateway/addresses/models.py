@@ -8,15 +8,16 @@ class UserAddresses(BaseModel):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="addresses"
     )
     is_default = models.BooleanField(default=False)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
-    title = models.CharField(max_length=50)
+    latitude = models.FloatField(db_index=True)
+    longitude = models.FloatField(db_index=True)
+    title = models.CharField(max_length=50, blank=True, null=True)
     province = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     street = models.CharField(max_length=255)
     alley = models.CharField(max_length=255, blank=True, null=True)
     plaque = models.CharField(max_length=20)
     unit = models.CharField(max_length=20, blank=True, null=True)
+    postal_code = models.CharField(max_length=20)
 
     @property
     def full_address(self):
@@ -30,9 +31,8 @@ class UserAddresses(BaseModel):
         parts.append(self.plaque)
         if self.unit:
             parts.append(self.unit)
+        parts.append(self.postal_code)
         return " - ".join(parts)
 
     def __str__(self):
-        return (
-            f"{self.user.get_full_name()} — {self.title} | {self.city}, {self.street}"
-        )
+        return f"{self.user.get_full_name()} | {self.province} - {self.city} - {self.street}"

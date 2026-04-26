@@ -7,10 +7,8 @@ class UserAddressesAdmin(admin.ModelAdmin):
     list_display = (
         "get_user_full_name",
         "get_user_phone",
-        "title",
         "city",
         "street",
-        "plaque",
         "is_default",
     )
     list_filter = ("is_default", "city", "province")
@@ -23,6 +21,7 @@ class UserAddressesAdmin(admin.ModelAdmin):
         "alley",
         "plaque",
         "title",
+        "postal_code",
     )
     ordering = ("-city",)
 
@@ -33,5 +32,6 @@ class UserAddressesAdmin(admin.ModelAdmin):
     def get_user_phone(self, obj):
         return obj.user.phone
 
+    get_user_full_name.short_description = "Full name"
     get_user_phone.short_description = "Phone"
-    get_user_phone.admin_order_field = "user__phone"
+    get_user_full_name.admin_order_field = "user__last_name"
