@@ -34,6 +34,9 @@ OTP_RATE_LIMIT_TTL = settings.OTP_RATE_LIMIT_TTL
 
 
 class SendOtpView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
     def otp_key(self, purpose, target):
         return f"{purpose}_otp_send:{target}"
 
@@ -76,6 +79,9 @@ class SendOtpView(APIView):
 
 
 class VerifyOtpView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
     def otp_key(self, purpose, target):
         return f"{purpose}_otp_send:{target}"
 
@@ -233,6 +239,7 @@ class SellerView(APIView):
 
 
 class PhoneChangeView(APIView):
+    @swagger_auto_schema(security=[{"Bearer": []}])
     def post(self, request):
         user = request.user
         phone = user.phone
@@ -258,6 +265,7 @@ class PhoneChangeView(APIView):
 
 
 class PasswordChangeView(APIView):
+    @swagger_auto_schema(security=[{"Bearer": []}])
     def post(self, request):
         user = request.user
         phone = user.phone

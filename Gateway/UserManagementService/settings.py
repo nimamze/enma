@@ -126,14 +126,6 @@ SWAGGER_SETTINGS = {
     }
 }
 
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "accounts.authentication.RedisBlacklistJWTAuthentication",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-    ],
-}
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
@@ -188,8 +180,13 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 KAVENEGAR_API_KEY = os.getenv("KAVENEGAR_API_KEY")
 KAVENEGAR_SENDER = os.getenv("KAVENEGAR_SENDER")
 
-
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "accounts.authentication.RedisBlacklistJWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
@@ -197,13 +194,14 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {"anon": "50/day", "user": "500/day"},
 }
 
-RATE_LIMIT_PASSWORD_CHANGE = int(os.getenv("PASSWORD_CHANGE_RATE_LIMIT", 86400))
-RATE_LIMIT_PHONE_CHANGE = int(os.getenv("PHONE_CHANGE_RATE_LIMIT", 86400))
-RATE_LIMIT_PASSWORD_RESET = int(os.getenv("PASSWORD_FORGOT_RATE_LIMIT", 86400))
-RATE_LIMIT_OTP_DAILY = int(os.getenv("OTP_DAILY_RATE_LIMIT", 5))
-OTP_TTL = int(os.getenv("OTP_TIME_VALIDATION", 300))
-OTP_AUTHORIZATION_TTL = int(os.getenv("SIGN_UP_OTP_TIME_VALIDATION", 300))
-OTP_SIGNUP_TTL = int(os.getenv("SIGN_UP_OTP_TIME_VALIDATION", 86400))
-OTP_RATE_LIMIT_TTL = int(os.getenv("SIGN_UP_OTP_TIME_VALIDATION", 86400))
+
+RATE_LIMIT_PASSWORD_CHANGE = int(os.getenv("RATE_LIMIT_PASSWORD_CHANGE", 86400))
+RATE_LIMIT_PHONE_CHANGE = int(os.getenv("RATE_LIMIT_PHONE_CHANGE", 86400))
+RATE_LIMIT_PASSWORD_RESET = int(os.getenv("RATE_LIMIT_PASSWORD_RESET", 86400))
+RATE_LIMIT_OTP_DAILY = int(os.getenv("RATE_LIMIT_OTP_DAILY", 5))
+OTP_TTL = int(os.getenv("OTP_TTL", 300))
+OTP_AUTHORIZATION_TTL = int(os.getenv("OTP_AUTHORIZATION_TTL", 300))
+OTP_SIGNUP_TTL = int(os.getenv("OTP_SIGNUP_TTL", 86400))
+OTP_RATE_LIMIT_TTL = int(os.getenv("OTP_RATE_LIMIT_TTL", 86400))
 
 MAPIR_API_KEY = os.getenv("MAPIR_API_KEY")
