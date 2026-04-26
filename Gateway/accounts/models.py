@@ -4,6 +4,13 @@ from django.db import models, transaction
 from django.core.exceptions import ValidationError
 from Project.Enma.Gateway.core.models import SoftDeleteModel
 import uuid
+from django.conf import settings
+from core.utils.storage_backends import UsersMediaStorage
+
+if not settings.SAVE_FILES_LOCALLY:
+    users_storage = UsersMediaStorage()
+else:
+    users_storage = None
 
 
 class UserDeletionBackup(models.Model):
@@ -51,8 +58,10 @@ class UserManager(BaseUserManager):
 class CustomUser(AbstractUser, SoftDeleteModel):
     email = models.EmailField(unique=True)
     phone = models.CharField(unique=True, max_length=16, db_index=True)
+
     image = models.ImageField(
         upload_to="users/avatars/",
+        storage=users_storage if users_storage else None,
         null=True,
         blank=True,
     )

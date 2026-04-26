@@ -10,6 +10,7 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG_MODE", "True") == "True"
+SAVE_FILES_LOCALLY = os.getenv("SAVE_FILES_LOCALLY", "True") == "True"
 
 ALLOWED_HOSTS = []
 
@@ -96,6 +97,15 @@ STATIC_URL = "/static/"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+os.makedirs(MEDIA_ROOT, exist_ok=True)
+if not SAVE_FILES_LOCALLY:
+    INSTALLED_APPS += ["storages"]
+    AWS_USERS_ACCESS_KEY_ID = os.getenv("S3_USERS_ACCESS_KEY")
+    AWS_USERS_SECRET_ACCESS_KEY = os.getenv("S3_USERS_SECRET_KEY")
+    AWS_USERS_STORAGE_BUCKET_NAME = os.getenv("S3_USERS_BUCKET_NAME")
+    AWS_USERS_S3_ENDPOINT_URL = os.getenv("S3_USERS_ENDPOINT")
+
 
 AUTH_USER_MODEL = "accounts.CustomUser"
 

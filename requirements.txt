@@ -4,6 +4,8 @@ annotated-types==0.7.0
 anyio==4.13.0
 asgiref==3.11.1
 billiard==4.2.4
+boto3==1.42.96
+botocore==1.42.96
 celery==5.6.3
 certifi==2026.4.22
 click==8.3.3
@@ -14,6 +16,7 @@ cron-descriptor==1.4.5
 Django==6.0.4
 django-celery-beat==2.9.0
 django-redis==6.0.0
+django-storages==1.14.6
 django-timezone-field==7.2.1
 django_celery_results==2.6.0
 djangorestframework==3.17.1
@@ -32,6 +35,7 @@ httpx==0.28.1
 idna==3.13
 inflection==0.5.1
 Jinja2==3.1.6
+jmespath==1.1.0
 kombu==5.6.2
 markdown-it-py==4.0.0
 MarkupSafe==3.0.3
@@ -57,6 +61,7 @@ redis==7.4.0
 rich==15.0.0
 rich-toolkit==0.19.7
 rignore==0.7.6
+s3transfer==0.16.1
 sentry-sdk==2.58.0
 shellingham==1.5.4
 six==1.17.0
