@@ -139,3 +139,6 @@ class CustomUser(AbstractUser, SoftDeleteModel):
         self.is_deleted = False
         self.save(update_fields=["email", "phone", "is_deleted"])
         backup.delete()
+
+    def __str__(self):
+        return f"{self.get_full_name().strip()} - {self.phone}"
