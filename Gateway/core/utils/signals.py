@@ -9,11 +9,11 @@ User = get_user_model()
 @receiver(post_save, sender=User, dispatch_uid="user_created_signal")
 def userCreatedHandler(sender, instance, created, **kwargs):
     if created:
-        send_email_task(instance.email, "Welcome to our site!")
+        send_email_task(instance.email, "Welcome to our site!")  # type: ignore
 
 
 @receiver(post_delete, sender=User, dispatch_uid="user_deleted_signal")
 def userDeletedHandler(sender, instance, **kwargs):
-    send_email_task(
+    send_email_task(  # type: ignore
         instance.email, "Sorry to hear you are leaving us, wish you the best!"
     )

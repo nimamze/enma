@@ -2,10 +2,11 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models, transaction
 from django.core.exceptions import ValidationError
-from Project.Enma.Gateway.core.models import SoftDeleteModel
+from core.models import SoftDeleteModel
 import uuid
 from django.conf import settings
 from core.utils.storage_backends import UsersMediaStorage
+from core.utils.tasks import delete_user_avatar_task
 
 if not settings.SAVE_FILES_LOCALLY:
     users_storage = UsersMediaStorage()
@@ -73,18 +74,23 @@ class CustomUser(AbstractUser, SoftDeleteModel):
 
     @transaction.atomic
     def delete(self, using=None, keep_parents=False):
+        avatar_name = self.image.name if self.image else None
+
         UserDeletionBackup.objects.update_or_create(
             user=self,
-            defaults={
-                "email": self.email,
-                "phone": self.phone,
-            },
+            defaults={"email": self.email, "phone": self.phone},
         )
+
         unique_suffix = uuid.uuid4().hex
         self.email = f"deleted__{unique_suffix}@deleted.local"
         self.phone = f"deleted__{unique_suffix}"
         self.is_deleted = True
-        self.save(update_fields=["email", "phone", "is_deleted"])
+        self.image = None
+
+        self.save(update_fields=["email", "phone", "is_deleted", "image"])
+
+        if avatar_name:
+            transaction.on_commit(lambda: delete_user_avatar_task.delay(avatar_name))  # type: ignore
 
     @transaction.atomic
     def restore(self, new_email=None, new_phone=None):

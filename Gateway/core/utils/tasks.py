@@ -1,5 +1,5 @@
 from django.core.mail import send_mail
-from Project.Enma.Gateway.celery import shared_task
+from celery import shared_task
 from django.conf import settings
 from django.core.management import call_command
 from django.contrib.auth import get_user_model
@@ -7,6 +7,8 @@ from datetime import timedelta
 from django.utils import timezone
 from django.db.models import Q
 from .sms import send_sms
+import boto3
+from botocore.exceptions import ClientError
 
 User = get_user_model()
 
@@ -53,4 +55,26 @@ def send_email_for_not_login_users(self):
                 fail_silently=False,
             )
     except Exception as exc:
+        raise self.retry(exc=exc)
+
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=60)
+def delete_user_avatar_task(self, file_name):
+    if not file_name:
+        return
+
+    try:
+        s3 = boto3.client(
+            "s3",
+            endpoint_url=settings.AWS_USERS_S3_ENDPOINT_URL,
+            aws_access_key_id=settings.AWS_USERS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_USERS_SECRET_ACCESS_KEY,
+        )
+
+        s3.delete_object(
+            Bucket=settings.AWS_USERS_STORAGE_BUCKET_NAME,
+            Key=file_name,
+        )
+
+    except ClientError as exc:
         raise self.retry(exc=exc)
